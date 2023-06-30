@@ -15,7 +15,6 @@ try {
 } catch (err) {
 	console.log(err);
 }
-
 ---
 
 <!DOCTYPE html>
@@ -65,20 +64,25 @@ try {
 					>
 						SENARAI ANGGOTA
 					</a>
-					<button id="log_keluar" class="bg-slate-600 text-white text-center font-bold p-2 hover:bg-slate-700"
-					>LOG KELUAR</button>
+					<button
+						id="log_keluar"
+						class="bg-slate-600 text-white text-center font-bold p-2 hover:bg-slate-700"
+					>
+						LOG KELUAR
+					</button>
 				</div>
-				<script>
-					const log_keluar = document.querySelector("#log_keluar");
-					log_keluar.addEventListener('click',()=>{
-						document.cookie = 'token=; Max-Age=0; path=/; domain=' + location.hostname;
-						location.href="/"
-					});
-				</script>
 			)
 		}
 		<div class="flex justify-center p-2 w-full col-span-full">
 			<slot />
 		</div>
+		<script>
+			const log_keluar = document.querySelector("#log_keluar");
+			log_keluar.addEventListener("click", () => {
+				document.cookie =
+					"token=; Max-Age=0; path=/; domain=" + location.hostname;
+				location.href = "/";
+			});
+		</script>
 	</body>
 </html>

@@ -80,8 +80,8 @@ try {
 		<script>
 			const log_keluar = document.querySelector("#log_keluar");
 			log_keluar?.addEventListener("click", () => {
-				document.cookie =
-					"token=; Max-Age=0; path=/; domain=" + location.hostname;
+				alert("logged out");
+				document.cookie = "token=; max-age=0;";
 				location.href = "/";
 			});
 		</script>

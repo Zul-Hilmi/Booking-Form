@@ -40,8 +40,9 @@ try {
             }
         );
         const cookiesOption = {
-            path: "/",
-            maxAge: 3600,
+            expires: new Date(Date.now() + 3600000),
+            httpOnly: true,
+            secure: true,
             sameSite: true,
         };
         Astro.cookies.set("token", token, cookiesOption);

@@ -48,7 +48,6 @@ try {
         return new Response(
             JSON.stringify({
                 message: "Log masuk akaun berjaya",
-                success: true,
             }),
             { status: 200 }
         );
@@ -98,7 +97,7 @@ try {
             });
             const data = await res.json();
             alert(data.message);
-            if (data.success === true) {
+            if (res.ok) {
                 window.location.href = `/users/admin`;
             }
         });

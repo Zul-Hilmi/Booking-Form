@@ -76,9 +76,10 @@ try {
 		<div class="flex justify-center p-2 w-full col-span-full">
 			<slot />
 		</div>
+
 		<script>
 			const log_keluar = document.querySelector("#log_keluar");
-			log_keluar.addEventListener("click", () => {
+			log_keluar?.addEventListener("click", () => {
 				document.cookie =
 					"token=; Max-Age=0; path=/; domain=" + location.hostname;
 				location.href = "/";

@@ -1,0 +1,65 @@
+---
+import StaffList from "../../components/StaffList";
+import Layout from "../../layouts/Layout.astro";
+import { getUser } from "../../lib/auth";
+import { Staff } from "../../models/Staff";
+
+let token: string | undefined;
+let staff;
+let id: string | undefined;
+try {
+    token = Astro.cookies.get("token").value;
+    const user = await getUser(token);
+    if (user === false) return Astro.redirect("/users/login");
+    id = Astro.params.id;
+    staff = await Staff.findById(id).orFail();
+} catch (err) {
+    console.log(err);
+    return Astro.redirect("/staffs");
+}
+---
+
+<Layout title="admin">
+    <form class="grid grid-cols-2 items-center gap-2 border border-black">
+        <h2
+            class="bg-slate-500 text-white font-bold col-span-full text-center p-2"
+        >
+            MAKLUMAT ANGGOTA
+        </h2>
+        <label for="name" class="font-bold pl-2">Nama:</label>
+        <span class="p-2">{staff.name}</span>
+
+        <label for="email" class="font-bold pl-2">Emel:</label>
+        <span class="p-2">{staff.email}</span>
+
+        <label for="department" class="font-bold pl-2">Jabatan:</label>
+        <span class="p-2">{staff.department}</span>
+
+        <label for="phone" class="font-bold pl-2">Telefon:</label>
+        <span class="p-2">{staff.phone}</span>
+        <span class="col-span-full text-center p-2">
+            <button
+                id="delete"
+                class="bg-red-500 hover:bg-red-600 text-white rounded font-bold p-2"
+                >DELETE</button
+            >
+        </span>
+    </form>
+    <script define:vars={{ id, token }}>
+        const deleteButton = document.querySelector("#delete");
+        deleteButton.addEventListener("click", async () => {
+            try {
+                const res = await fetch(`/api/staffs/${id}`, {
+                    method: "DELETE",
+                    headers: {
+                        Auth: `Bearer ${token}`,
+                    },
+                });
+                const data = await res.json();
+                alert(data.message);
+            } catch (err) {
+                console.log(err);
+            }
+        });
+    </script>
+</Layout>

@@ -1,0 +1,106 @@
+---
+import Input from "../../components/Input";
+import jwt from "jsonwebtoken";
+import { getUser } from "../../lib/auth";
+import Layout from "../../layouts/Layout.astro";
+
+try {
+    const token = Astro.cookies.get("token");
+    const login = await getUser(token.value);
+    if (login) return Astro.redirect("/");
+
+    if (Astro.request.method === "POST") {
+        const body = await Astro.request.formData();
+        const password = body.get("password");
+        if (typeof password !== "string") {
+            return new Response(
+                JSON.stringify({
+                    message: "Maklumat yang diberi tidak tepat",
+                    success: false,
+                }),
+                { status: 403 }
+            );
+        }
+
+        if (password !== import.meta.env.ADMIN_PASSWORD) {
+            return new Response(
+                JSON.stringify({
+                    message: "Maklumat yang diberi tidak tepat",
+                    success: false,
+                }),
+                { status: 403 }
+            );
+        }
+
+        const token = jwt.sign(
+            { id: import.meta.env.SESSION_SECRET },
+            import.meta.env.AUTH_TOKEN,
+            {
+                expiresIn: "1h",
+            }
+        );
+        const cookiesOption = {
+            path: "/",
+            maxAge: 3600,
+            sameSite: true,
+        };
+        Astro.cookies.set("token", token, cookiesOption);
+        return new Response(
+            JSON.stringify({
+                message: "Log masuk akaun berjaya",
+                success: true,
+            }),
+            { status: 200 }
+        );
+    }
+} catch (err) {
+    console.log(err);
+    return new Response(
+        JSON.stringify({
+            message: "Server mengalami masalah",
+            success: false,
+        }),
+        { status: 403 }
+    );
+}
+---
+
+<Layout title="login">
+    <form class="flex flex-col items-center py-3 gap-4">
+        <h1 class="underline font-bold">LOG MASUK AKAUN</h1>
+        <span class="grid grid-cols-2 gap-2">
+            <Input
+                name="password"
+                label="Kata Laluan"
+                type="password"
+                required={true}
+            />
+        </span>
+        <span class="col-span-full text-center m-2">
+            <button
+                class="bg-blue-500 font-bold text-white rounded p-2 hover:bg-blue-600"
+            >
+                Hantar Borang
+            </button>
+        </span>
+    </form>
+    <script>
+        const form = document.querySelector("form");
+        form?.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const payload = new URLSearchParams(new FormData(form) as any);
+            const res = await fetch("", {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                method: "POST",
+                body: payload,
+            });
+            const data = await res.json();
+            alert(data.message);
+            if (data.success === true) {
+                window.location.href = `/users/admin`;
+            }
+        });
+    </script>
+</Layout>

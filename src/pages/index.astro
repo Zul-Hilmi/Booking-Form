@@ -1,0 +1,92 @@
+---
+import BilikLatihan from "../components/Form/BilikLatihan";
+import MakanMinum from "../components/Form/MakanMinum";
+import Petugas from "../components/Form/Petugas";
+import Program from "../components/Form/Program";
+import RuaiInap from "../components/Form/RuaiInap";
+import Layout from "../layouts/Layout.astro";
+import { Staff } from "../models/Staff";
+---
+
+<Layout title="Borang Tempahan.">
+	<form method="POST" class="grid grid-cols-2 py-3 w-full">
+		<h1
+			class="bg-slate-600 text-white text-center font-bold col-span-full p-2"
+		>
+			BORANG TEMPAHAN
+		</h1>
+		<div class="border border-black flex justify-center col-span-full">
+			<select
+				name="Jenis"
+				id="jenis"
+				class="border border-black rounded col-span-full m-2 text-sm text-center"
+			>
+				<option value="Q3">
+					MESYUARAT / TAKLIMAT / LAIN-LAIN PROGRAM</option
+				>
+				<option value="Q5">KURSUS / BENGKEL</option>
+			</select>
+		</div>
+		<h2
+			class="bg-slate-500 text-white text-center font-bold col-span-full p-2"
+		>
+			Maklumat Petugas Program
+		</h2>
+		<Petugas client:load/>
+		<h2
+			class="bg-slate-500 text-white text-center font-bold col-span-full p-2"
+		>
+			Maklumat Program
+		</h2>
+		<Program />
+		<h2
+			class="bg-slate-500 text-white text-center font-bold col-span-full p-2"
+		>
+			Tempahan Penginapan Ruai Inap
+		</h2>
+		<RuaiInap />
+		<h2
+			class="bg-slate-500 text-white text-center font-bold col-span-full p-2"
+		>
+			Tempahan Bilik Latihan
+		</h2>
+		<BilikLatihan />
+		<h2
+			class="bg-slate-500 text-white text-center font-bold col-span-full p-2"
+		>
+			Tempahan Makan Minum
+		</h2>
+		<MakanMinum />
+		<span class="col-span-full text-center m-2">
+			<button
+				class="bg-blue-500 font-bold text-white rounded p-2 hover:bg-blue-600"
+			>
+				Hantar Borang
+			</button>
+		</span>
+	</form>
+	<script>
+		const form = document.querySelector("form");
+		form?.addEventListener("submit", async (e) => {
+			e.preventDefault();
+			const formData = new FormData(form);
+			const payload = {};
+			for (const [key, value] of formData.entries()) {
+				if (typeof value != "undefined" && value.trim() != "") {
+					payload[key] = value;
+					console.log(payload[key]);
+				}
+			}
+			console.log(payload);
+			const res = await fetch("/api/forms", {
+				method: "POST",
+				body: JSON.stringify(payload),
+			});
+			const data = await res.json();
+			alert(data.message);
+			if (res.ok) {
+				//
+			}
+		});
+	</script>
+</Layout>

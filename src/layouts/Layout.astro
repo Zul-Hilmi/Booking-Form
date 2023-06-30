@@ -1,0 +1,84 @@
+---
+import { getUser } from "../lib/auth";
+import "../lib/db";
+export interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+
+let token;
+let login;
+try {
+	token = Astro.cookies.get("token").value;
+	login = await getUser(token);
+} catch (err) {
+	console.log(err);
+}
+
+---
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="Astro description" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+	</head>
+	<body class="flex flex-col items-center">
+		{
+			!login ? (
+				<div class="w-full col-span-full grid grid-cols-2">
+					<a
+						href="/"
+						class="bg-slate-600 text-white text-center font-bold p-2 hover:bg-slate-700"
+					>
+						BORANG TEMPAHAN
+					</a>
+					<a
+						href={`/users/${login ? "admin" : "login"}`}
+						class="bg-slate-600 text-white text-center font-bold p-2 hover:bg-slate-700"
+					>
+						ADMIN
+					</a>
+				</div>
+			) : (
+				<div class="w-full col-span-full grid grid-cols-4">
+					<a
+						href="/"
+						class="bg-slate-600 text-white text-center font-bold p-2 hover:bg-slate-700"
+					>
+						BORANG TEMPAHAN
+					</a>
+					<a
+						href="/users/admin"
+						class="bg-slate-600 text-white text-center font-bold p-2 hover:bg-slate-700"
+					>
+						SENARAI BORANG
+					</a>
+					<a
+						href="/staffs/"
+						class="bg-slate-600 text-white text-center font-bold p-2 hover:bg-slate-700"
+					>
+						SENARAI ANGGOTA
+					</a>
+					<button id="log_keluar" class="bg-slate-600 text-white text-center font-bold p-2 hover:bg-slate-700"
+					>LOG KELUAR</button>
+				</div>
+				<script>
+					const log_keluar = document.querySelector("#log_keluar");
+					log_keluar.addEventListener('click',()=>{
+						document.cookie = 'token=; Max-Age=0; path=/; domain=' + location.hostname;
+						location.href="/"
+					});
+				</script>
+			)
+		}
+		<div class="flex justify-center p-2 w-full col-span-full">
+			<slot />
+		</div>
+	</body>
+</html>

@@ -1,0 +1,21 @@
+---
+import FormList from "../../components/FormsList";
+import StaffList from "../../components/StaffList";
+import Layout from "../../layouts/Layout.astro";
+import { getUser } from "../../lib/auth";
+
+let token;
+try {
+    token = Astro.cookies.get("token").value;
+    const user = await getUser(token);
+    if (user === false) return Astro.redirect("/users/login");
+} catch (err) {
+    console.log(err);
+}
+---
+
+<Layout title="admin">
+    <div class="flex flex-col items-center gap-2">
+        <FormList token={token as string} client:load />
+    </div>
+</Layout>

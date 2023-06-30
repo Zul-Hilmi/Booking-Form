@@ -38,7 +38,7 @@ try {
 						BORANG TEMPAHAN
 					</a>
 					<a
-						href={`/users/${login ? "admin" : "login"}`}
+						href={`${login ? "/users/admin" : "login"}`}
 						class="bg-slate-600 text-white text-center font-bold p-2 hover:bg-slate-700"
 					>
 						ADMIN
@@ -64,26 +64,17 @@ try {
 					>
 						SENARAI ANGGOTA
 					</a>
-					<button
-						id="log_keluar"
+					<a
+						href="/logout"
 						class="bg-slate-600 text-white text-center font-bold p-2 hover:bg-slate-700"
 					>
 						LOG KELUAR
-					</button>
+					</a>
 				</div>
 			)
 		}
 		<div class="flex justify-center p-2 w-full col-span-full">
 			<slot />
 		</div>
-
-		<script>
-			const log_keluar = document.querySelector("#log_keluar");
-			log_keluar?.addEventListener("click", () => {
-				alert("logged out");
-				document.cookie = "token=; max-age=0;";
-				location.href = "/";
-			});
-		</script>
 	</body>
 </html>
